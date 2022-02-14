@@ -1,0 +1,8 @@
+
+.settings/org.eclipse.core.resources.prefs
+.classpath
+.project
+.settings/org.eclipse.m2e.core.prefs
+.settings/org.eclipse.jdt.core.prefs
+.mvn/wrapper/maven-wrapper.properties
+.mvn/wrapper/maven-wrapper.jar
