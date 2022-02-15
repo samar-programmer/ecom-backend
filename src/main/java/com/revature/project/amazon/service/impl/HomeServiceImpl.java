@@ -46,7 +46,7 @@ public class HomeServiceImpl implements HomeService{
 
 	@Override
 	public boolean sendEmail(String subject, String message, String to) {
-		boolean f=false;
+		boolean flag=false;
 		
 		String from="samarsamar1023@gmail.com";
 		
@@ -80,15 +80,14 @@ public class HomeServiceImpl implements HomeService{
 			mimemessage.setText(message);
 			Transport.send(mimemessage);
 			
-			System.out.println("Sent Success.............");
 			
-			f=true;
+			flag=true;
 			}
 		catch(Exception e)
 		{
 			e.printStackTrace();
 		}
-		return f;
+		return flag;
 	}
 
 	@Override
@@ -105,7 +104,7 @@ public class HomeServiceImpl implements HomeService{
 
 	@Override
 	public boolean sendPassword(String subject, String tempPassword, String tempEmail) {
-		boolean f=false;
+		boolean flag=false;
 		
 		String from="samarsamar1023@gmail.com";
 		
@@ -139,9 +138,8 @@ public class HomeServiceImpl implements HomeService{
 			mimemessage.setText("Your PassWord is  "+tempPassword);
 			Transport.send(mimemessage);
 			
-			System.out.println("Sent Success.............");
 			
-			f=true;
+			flag=true;
 			}
 		catch(Exception e)
 		{
@@ -149,7 +147,7 @@ public class HomeServiceImpl implements HomeService{
 		}
 		
 		
-		return f;
+		return flag;
 	}
 
 	@Override

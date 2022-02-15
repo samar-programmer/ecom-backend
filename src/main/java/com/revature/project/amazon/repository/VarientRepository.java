@@ -7,14 +7,14 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
-import com.revature.project.amazon.model.ProductVarients;
+import com.revature.project.amazon.model.ProductVarient;
 @Repository
-public interface VarientRepository extends JpaRepository<ProductVarients, Long> {
+public interface VarientRepository extends JpaRepository<ProductVarient, Long> {
 	
-	List<ProductVarients> findByProductId(int parseLong);
+	List<ProductVarient> findByProductId(int parseLong);
 	
 	void deleteByProductId( int productId);
 
-	List<ProductVarients> findAllByEmail(String email);
+	List<ProductVarient> findAllByEmail(String email);
 
 }

@@ -7,6 +7,8 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.util.List;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
@@ -31,7 +33,8 @@ import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 @Component
 public class PDFGenerator {
-	
+
+	Logger logger = LoggerFactory.getLogger(PDFGenerator.class);
 	
 	@Autowired
 	CartRepository cart;
@@ -84,9 +87,8 @@ public class PDFGenerator {
 				createTable(document,noOfColumns);
 				addFooter(document);
 				document.close();
-				System.out.println("------------------Your PDF Report is ready!-------------------------");
+				logger.info("------------------Your PDF Report is ready!-------------------------");
 			} catch (DocumentException e) {
-				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}
 			return new ByteArrayInputStream(out.toByteArray());
@@ -159,7 +161,7 @@ private void getDbData(PdfPTable table) {
 			table.getDefaultCell().setHorizontalAlignment(Element.ALIGN_CENTER);
 			table.getDefaultCell().setVerticalAlignment(Element.ALIGN_MIDDLE);
 			
-			table.addCell(cart.getBufcartId().toString());
+			
 			table.addCell(cart.getProductname());
 			table.addCell(Integer.toString(cart.getQuantity()));
 			table.addCell(cart.getEmail());
@@ -167,7 +169,6 @@ private void getDbData(PdfPTable table) {
 			
 			table.addCell(currencySymbol + cart.getTotal());
 			
-			System.out.println(cart.getProductname());
 		}
 		
 	}

@@ -26,25 +26,6 @@ public class Product {
 	@GeneratedValue(strategy = GenerationType.AUTO)
 	private Long productId;
 	
-	
-//	@NotBlank(message = "productName is mandatory")
-//	private String productName;
-//	 
-//	private String description;
-//	 @NotBlank(message = "category is mandatory")
-//    private String category;
-//	 @NotBlank(message = "imgsrc is mandatory")
-//    @Column(length = 100000, nullable=false)
-//    private String imgsrc;
-//	 @NotBlank(message = "addeddate is mandatory")
-//    private String addeddate;
-//	 @NotBlank(message = "varient is mandatory")
-//    private String varient;
-//	 @NotBlank(message = "varient is mandatory")
-//    private String productPrice;
-//	 @NotBlank(message = "productDiscountPrice is mandatory")
-//    private String productDiscountPrice;
-	
 	@NotBlank(message = "category is mandatory")
 	private String category;
 	@NotBlank(message = "productName is mandatory")
@@ -74,7 +55,7 @@ public class Product {
 	//@OneToMany(targetEntity=ProductVarients.class, mappedBy = "product" , cascade = CascadeType.ALL, orphanRemoval = true)
 	 @OneToMany(cascade = CascadeType.ALL)
 	 @JoinColumn(name = "cc_fk",referencedColumnName = "productId")
-	List<ProductVarients> varients;
+	List<ProductVarient> varients;
    
     
 }

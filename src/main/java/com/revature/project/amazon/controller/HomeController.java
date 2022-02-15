@@ -8,6 +8,8 @@ import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.io.InputStreamResource;
 import org.springframework.http.HttpHeaders;
@@ -40,10 +42,14 @@ public class HomeController {
 	
 	@Autowired
 	PDFGenerator pdfgenerator;
+	
+	
+	Logger logger = LoggerFactory.getLogger(HomeController.class);
+	
 
 	@PostMapping("/signup")
 	public ResponseEntity<ServerResponse> addUser(@RequestBody User user) {
-
+		logger.info("Inside addUser Method");
 		ServerResponse serverResponse = new ServerResponse();
 		try {
 
@@ -61,7 +67,6 @@ public class HomeController {
 					serverResponse.setStatus(ResponseCode.BAD_REQUEST_CODE);
 					serverResponse.setMessage(ResponseCode.INVALID_EMAIL_FAIL_MSG);
 				} else {
-					System.out.println(user);
 					homeService.signupUser(user);
 					serverResponse.setStatus(ResponseCode.SUCCESS_CODE);
 					serverResponse.setMessage(ResponseCode.CUST_REG);
@@ -83,14 +88,7 @@ public class HomeController {
 
 		ServerResponse serverResponse = new ServerResponse();
 		try {
-			Optional<User> user = Optional.ofNullable(homeService.verifyUser(email, password));// ofNullable - return
-																								// value if present
-																								// otherwise retun empty
-																								// optional object // of
-																								// - if we pass null
-																								// value it throws
-																								// exception
-			String sasi = user.get().getEmail();
+			Optional<User> user = Optional.ofNullable(homeService.verifyUser(email, password));
 			if (user.isPresent()) {
 				if (user.get().getPassword().equalsIgnoreCase(password)) {
 					serverResponse.setMessage(ResponseCode.SUCCESS_LOGIN);
@@ -117,19 +115,11 @@ public class HomeController {
 	public String sendOTP(@RequestBody User ecommerceuser) {
 		Random random = new Random(1000);
 		long otp = random.nextInt(999999);
-
 		String subject = "OTP from AMAZON";
 		String message = "OTP to Change Your Password is = " + otp;
-		System.out.println("Hello otp");
-		System.out.println(ecommerceuser.getEmail());
 		String to = ecommerceuser.getEmail();
-
-		System.out.println(message);
-		System.out.println(to);
-
 		boolean flag = this.homeService.sendEmail(subject, message, to);
 
-		System.out.println(to);
 		int i = homeService.updateUserByOtp(to, otp);
 
 		if (flag) {

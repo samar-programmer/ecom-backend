@@ -22,7 +22,7 @@ import lombok.Setter;
 @Setter
 @Entity
 @Table(name="product_varient_table")
-public class ProductVarients {
+public class ProductVarient {
 	@Id
 	@GeneratedValue(strategy = GenerationType.AUTO)
 	private Long varientId;
@@ -33,7 +33,7 @@ public class ProductVarients {
 	
 	@OneToMany(cascade = CascadeType.ALL)
 	 @JoinColumn(name = "vc_fk",referencedColumnName = "varientId")
-	List<VarientValues> varientvalues;
+	List<VarientValue> varientvalues;
 	
 	
 }

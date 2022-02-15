@@ -3,8 +3,8 @@ package com.revature.project.amazon.response;
 import java.util.List;
 
 import com.revature.project.amazon.model.Product;
-import com.revature.project.amazon.model.ProductVarients;
-import com.revature.project.amazon.model.VarientValues;
+import com.revature.project.amazon.model.ProductVarient;
+import com.revature.project.amazon.model.VarientValue;
 import com.revature.project.amazon.utility.AllProductInfoDTO;
 
 import lombok.Data;
@@ -19,8 +19,8 @@ public class ProductResponse {
 	private String message;
 	private String successErrorType;
 	private List<Product> productList;
-	private List<ProductVarients> varientList;
-	private List<VarientValues> varientValuesList;
+	private List<ProductVarient> varientList;
+	private List<VarientValue> varientValuesList;
 	
 	private List<AllProductInfoDTO> allProductInfoDTO;
 }

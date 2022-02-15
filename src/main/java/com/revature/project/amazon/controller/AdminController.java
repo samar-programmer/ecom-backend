@@ -5,6 +5,8 @@ import java.util.List;
 
 import javax.validation.Valid;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -13,6 +15,7 @@ import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -21,8 +24,8 @@ import org.springframework.web.bind.annotation.RestController;
 import com.revature.project.amazon.constants.ResponseCode;
 import com.revature.project.amazon.exception.ProductCustomException;
 import com.revature.project.amazon.model.Product;
-import com.revature.project.amazon.model.ProductVarients;
-import com.revature.project.amazon.model.VarientValues;
+import com.revature.project.amazon.model.ProductVarient;
+import com.revature.project.amazon.model.VarientValue;
 import com.revature.project.amazon.response.ProductResponse;
 import com.revature.project.amazon.service.AdminService;
 import com.revature.project.amazon.utility.AllProductInfoDTO;
@@ -34,17 +37,19 @@ public class AdminController {
 
 	@Autowired
 	private AdminService adminService;
-
-	@PostMapping("/addProduct")
+	
+	Logger logger = LoggerFactory.getLogger(AdminController.class);
+	
+	
+	@PostMapping("product")
 	public ResponseEntity<ProductResponse> addProduct(@Valid @RequestBody final Product product) {
+		logger.info("Inside addProduct Method");
 		ProductResponse productResponse = new ProductResponse();
 		try {
-			System.out.print("sasi====>" + product.getEmail());
 			adminService.addProduct(product);
 			productResponse.setStatus(ResponseCode.SUCCESS_CODE);
 			productResponse.setMessage(ResponseCode.ADD_SUCCESS_MESSAGE);
 			productResponse.setSuccessErrorType(ResponseCode.SUCCESS);
-			System.out.println(product);
 
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -54,53 +59,17 @@ public class AdminController {
 
 	}
 
-	@GetMapping("/getProducts")
+	@GetMapping("/products")
 	public ResponseEntity<ProductResponse> getAllProduct() {
+		logger.info("Inside getAllProduct Method");
 		ProductResponse productResponse = new ProductResponse();
 		try {
 			productResponse.setProductList(adminService.getProducts());
-			List<Product> originalProductData = new ArrayList();
+
 			productResponse.setVarientList(adminService.getVarients());
 			productResponse.setVarientValuesList(adminService.getVarientValues());
-			int totalcheck = 0;
 
-			for (Product product : productResponse.getProductList()) {
-				String totalPrice = product.getProductDiscountPrice();
-				String radiocheck = "yes";
-				product.setTotalPrice(totalPrice);
-
-				List<ProductVarients> productVarients = adminService.getvarientByProductId(product.getProductId());
-
-				for (ProductVarients varentvalue : productVarients) {
-
-					List<VarientValues> list = adminService.getvarientValuesByVarientId(varentvalue.getVarientId());
-
-					if (totalcheck == 0) {
-
-						for (VarientValues values : list) {
-							if (radiocheck.equalsIgnoreCase("yes")) {
-								int FirstProductValue = Integer.parseInt(totalPrice)
-										+ Integer.parseInt(values.getPrice());
-								product.setTotalPrice(String.valueOf(FirstProductValue));
-								product.setRadioCheck("yes");
-								radiocheck = "no";
-							}
-
-							totalcheck++;
-						}
-
-					}
-					totalcheck = 0;
-
-					varentvalue.setVarientvalues(list);
-
-				}
-
-				product.setVarients(productVarients);
-
-				originalProductData.add(product);
-
-			}
+			List<Product> originalProductData = adminService.getOriginalProductDrtails(productResponse);
 
 			productResponse.setProductList(originalProductData);
 
@@ -116,13 +85,14 @@ public class AdminController {
 		return new ResponseEntity<ProductResponse>(productResponse, HttpStatus.OK);
 	}
 
-	@DeleteMapping("/deleteProduct/{id}")
+	@DeleteMapping("/product/{id}")
 	public ResponseEntity<ProductResponse> deleteProduct(@PathVariable(value = "id") Long productId) {
+		logger.info("Inside deleteProduct Method");
 		ProductResponse productResponse = new ProductResponse();
 
-		List<ProductVarients> deleteVarientValues = adminService.getvarientByProductId(productId);
+		List<ProductVarient> deleteVarientValues = adminService.getvarientByProductId(productId);
 
-		for (ProductVarients deleteVarientValue : deleteVarientValues) {
+		for (ProductVarient deleteVarientValue : deleteVarientValues) {
 			adminService.deleteVarientValueByVarientId(deleteVarientValue.getVarientId());
 		}
 
@@ -138,16 +108,17 @@ public class AdminController {
 		return new ResponseEntity<ProductResponse>(productResponse, HttpStatus.OK);
 	}
 
-	@PostMapping("/addVarient")
+	@PostMapping("/varient")
 	public ResponseEntity<ProductResponse> addVarient(@RequestParam String productId, @RequestParam String value,
 			@RequestParam String email) {
+		logger.info("Inside addVarient Method");
 		ProductResponse productResponse = new ProductResponse();
 		try {
 			boolean addOrNot = true;
-			List<ProductVarients> valuechecks = adminService.getvarientByProductId(Long.parseLong(productId));
+			List<ProductVarient> valuechecks = adminService.getvarientByProductId(Long.parseLong(productId));
 
 			if (valuechecks != null) {
-				for (ProductVarients valuecheck : valuechecks) {
+				for (ProductVarient valuecheck : valuechecks) {
 
 					if (valuecheck.getValue().equalsIgnoreCase(value)) {
 						addOrNot = false;
@@ -158,12 +129,12 @@ public class AdminController {
 
 			if (addOrNot == true) {
 				Product product = adminService.getProductbyId(Long.parseLong(productId));
-//			    	
-				ProductVarients varients = new ProductVarients();
+			    	
+				ProductVarient varients = new ProductVarient();
 				varients.setValue(value);
 				varients.setProductId(Integer.parseInt(productId));
 				varients.setEmail(email);
-				List<ProductVarients> ProductVarientsList = new ArrayList();
+				List<ProductVarient> ProductVarientsList = new ArrayList();
 				ProductVarientsList.add(varients);
 				product.setVarients(ProductVarientsList);
 				adminService.addProduct(product);
@@ -186,15 +157,16 @@ public class AdminController {
 
 	}
 
-	@PostMapping("/editVarient")
-	public ResponseEntity<ProductResponse> editVarient(@RequestBody ProductVarients editVarints) {
+	@PutMapping("/varient")
+	public ResponseEntity<ProductResponse> editVarient(@RequestBody ProductVarient editVarints) {
 		ProductResponse productResponse = new ProductResponse();
+		logger.info("Inside editVarient Method");
 		try {
 			boolean addOrNot = true;
-			List<ProductVarients> valuechecks = adminService.getvarientByProductId(editVarints.getProductId());
+			List<ProductVarient> valuechecks = adminService.getvarientByProductId(editVarints.getProductId());
 
 			if (valuechecks != null) {
-				for (ProductVarients valuecheck : valuechecks) {
+				for (ProductVarient valuecheck : valuechecks) {
 
 					if (valuecheck.getValue().equalsIgnoreCase(editVarints.getValue())) {
 						addOrNot = false;
@@ -204,10 +176,9 @@ public class AdminController {
 			}
 
 			if (addOrNot == true) {
-				Product product = adminService.getProductbyId((long) editVarints.getProductId());
-//			    	
+				Product product = adminService.getProductbyId((long) editVarints.getProductId());		    	
 
-				List<ProductVarients> ProductVarientsList = new ArrayList();
+				List<ProductVarient> ProductVarientsList = new ArrayList();
 				ProductVarientsList.add(editVarints);
 				product.setVarients(ProductVarientsList);
 				adminService.addProduct(product);
@@ -230,9 +201,10 @@ public class AdminController {
 
 	}
 
-	@DeleteMapping("/deleteVarient/{id}")
+	@DeleteMapping("/varient/{id}")
 	public ResponseEntity<ProductResponse> deleteVarient(@PathVariable(value = "id") Long VarientId) {
 		ProductResponse productResponse = new ProductResponse();
+		logger.info("Inside deleteVarient Method");
 		try {
 
 			adminService.deleteVarientValueByVarientId(VarientId);
@@ -246,16 +218,17 @@ public class AdminController {
 		return new ResponseEntity<ProductResponse>(productResponse, HttpStatus.OK);
 	}
 
-	@PostMapping("/addVarientValues")
+	@PostMapping("/varientvalue")
 	public ResponseEntity<ProductResponse> addVarientValues(@RequestParam String varientId, @RequestParam String name,
 			@RequestParam String price, @RequestParam String email) {
+		logger.info("Inside addVarientValues Method");
 		ProductResponse productResponse = new ProductResponse();
 		try {
 			boolean addOrNot = true;
-			List<VarientValues> valuechecks = adminService.getvarientValuesByVarientId(Long.parseLong(varientId));
+			List<VarientValue> valuechecks = adminService.getvarientValuesByVarientId(Long.parseLong(varientId));
 
 			if (valuechecks != null) {
-				for (VarientValues valuecheck : valuechecks) {
+				for (VarientValue valuecheck : valuechecks) {
 
 					if (valuecheck.getName().equalsIgnoreCase(name)) {
 						addOrNot = false;
@@ -265,14 +238,13 @@ public class AdminController {
 			}
 
 			if (addOrNot == true) {
-				ProductVarients ProductVarients = adminService.getvarientValuesbyVarientId(Long.parseLong(varientId));
-//			    	
-				VarientValues varientvalues = new VarientValues();
+				ProductVarient ProductVarients = adminService.getvarientValuesbyVarientId(Long.parseLong(varientId));			    	
+				VarientValue varientvalues = new VarientValue();
 				varientvalues.setVarientId(Long.parseLong(varientId));
 				varientvalues.setName(name);
 				varientvalues.setPrice(price);
 				varientvalues.setEmail(email);
-				List<VarientValues> ProductVarientsList = new ArrayList();
+				List<VarientValue> ProductVarientsList = new ArrayList();
 				ProductVarientsList.add(varientvalues);
 				ProductVarients.setVarientvalues(ProductVarientsList);
 				adminService.addVarientValues(ProductVarients);
@@ -295,21 +267,23 @@ public class AdminController {
 
 	}
 
-	@PostMapping("/editVarientValues")
-	public ResponseEntity<ProductResponse> editVarientValues(@RequestBody VarientValues editVarintValues) {
+	@PutMapping("/varientvalue")
+	public ResponseEntity<ProductResponse> editVarientValues(@RequestBody VarientValue editVarintValues) {
 		ProductResponse productResponse = new ProductResponse();
+		logger.info("Inside editVarientValues Method");
 		try {
 			boolean addOrNot = true;
 
 			if (addOrNot == true) {
-				ProductVarients ProductVarients = adminService
+				ProductVarient ProductVarients = adminService
 						.getvarientValuesbyVarientId(editVarintValues.getVarientId());
-				VarientValues varientvalues = new VarientValues();
+				VarientValue varientvalues = new VarientValue();
 				varientvalues.setVarientValuesId(editVarintValues.getVarientValuesId());
 				varientvalues.setVarientId(editVarintValues.getVarientId());
 				varientvalues.setName(editVarintValues.getName());
 				varientvalues.setPrice(editVarintValues.getPrice());
-				List<VarientValues> ProductVarientsList = new ArrayList();
+				varientvalues.setEmail(editVarintValues.getEmail());
+				List<VarientValue> ProductVarientsList = new ArrayList();
 				ProductVarientsList.add(varientvalues);
 				ProductVarients.setVarientvalues(ProductVarientsList);
 				adminService.addVarientValues(ProductVarients);
@@ -332,9 +306,10 @@ public class AdminController {
 
 	}
 
-	@DeleteMapping("/deleteVarientValue/{id}")
+	@DeleteMapping("/varientvalue/{id}")
 	public ResponseEntity<ProductResponse> deleteVarientValue(@PathVariable(value = "id") String varientValueId) {
 		ProductResponse productResponse = new ProductResponse();
+		logger.info("Inside deleteVarientValue Method");
 		try {
 			adminService.deleteVarientValuebyId(Long.parseLong(varientValueId));
 			productResponse.setStatus(ResponseCode.SUCCESS_CODE);
@@ -348,6 +323,7 @@ public class AdminController {
 	@GetMapping("/getProductsForAdmin")
 	public ResponseEntity<ProductResponse> getAllProductForAdmin(@RequestParam String email) {
 		ProductResponse productResponse = new ProductResponse();
+		logger.info("Inside getAllProductForAdmin Method");
 		try {
 			productResponse.setProductList(adminService.getProducts(email));
 			productResponse.setVarientList(adminService.getVarients(email));

@@ -12,6 +12,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -34,7 +35,7 @@ public class UesrController {
 	@Autowired
 	UserService userService;
 
-	@GetMapping("/addToCart")
+	@PostMapping("/cart")
 	public ResponseEntity<ServerResponse> addToCart(@RequestParam("productId") String productId,
 			@RequestParam("email") String email, @RequestParam("total") String total) {
 
@@ -63,7 +64,7 @@ public class UesrController {
 		return new ResponseEntity<ServerResponse>(serverResponse, HttpStatus.OK);
 	}
 
-	@GetMapping("/viewCart")
+	@GetMapping("/cart")
 	public ResponseEntity<CartResponse> viewCart(@RequestParam("email") String email) {
 		CartResponse resp = new CartResponse();
 		try {
@@ -77,7 +78,7 @@ public class UesrController {
 		return new ResponseEntity<CartResponse>(resp, HttpStatus.OK);
 	}
 
-	@PutMapping("/updateCart")
+	@PutMapping("/cart")
 	public ResponseEntity<CartResponse> updateCart(@RequestBody HashMap<String, String> cart) {
 
 		CartResponse resp = new CartResponse();
@@ -98,7 +99,7 @@ public class UesrController {
 		return new ResponseEntity<CartResponse>(resp, HttpStatus.OK);
 	}
 
-	@DeleteMapping("/delCart")
+	@DeleteMapping("/cart")
 	public ResponseEntity<CartResponse> delCart(@RequestParam("bufcartid") String bufcartid,
 			@RequestParam("email") String email) {
 

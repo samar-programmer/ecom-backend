@@ -5,8 +5,9 @@ import java.util.List;
 import javax.validation.Valid;
 
 import com.revature.project.amazon.model.Product;
-import com.revature.project.amazon.model.ProductVarients;
-import com.revature.project.amazon.model.VarientValues;
+import com.revature.project.amazon.model.ProductVarient;
+import com.revature.project.amazon.model.VarientValue;
+import com.revature.project.amazon.response.ProductResponse;
 
 public interface AdminService {
 
@@ -18,23 +19,23 @@ public interface AdminService {
 
 	Product getProductbyId(Long productId);
 
-	void saveVarientsForProduct(ProductVarients varients);
+	void saveVarientsForProduct(ProductVarient varients);
 
-	List<ProductVarients> getVarients();
+	List<ProductVarient> getVarients();
 
-	List<ProductVarients> getvarientByProductId(long parseLong);
+	List<ProductVarient> getvarientByProductId(long parseLong);
 
 	void deleteVarientbyId(Long productId);
 
 	void deleteproductVarientById(int productId);
 
-	List<VarientValues> getvarientValuesByVarientId(long parseLong);
+	List<VarientValue> getvarientValuesByVarientId(long parseLong);
 
-	ProductVarients getvarientValuesbyVarientId(long parseLong);
+	ProductVarient getvarientValuesbyVarientId(long parseLong);
 
-	void addVarientValues(ProductVarients productVarients);
+	void addVarientValues(ProductVarient productVarients);
 
-	List<VarientValues> getVarientValues();
+	List<VarientValue> getVarientValues();
 
 	void deleteVarientValuebyId(Long varientValueId);
 
@@ -44,9 +45,11 @@ public interface AdminService {
 
 	List<Product> getProducts(String email);
 
-	List<ProductVarients> getVarients(String email);
+	List<ProductVarient> getVarients(String email);
 
-	List<VarientValues> getVarientValues(String email);
+	List<VarientValue> getVarientValues(String email);
+
+	List<Product> getOriginalProductDrtails(ProductResponse productResponse);
 
 	
 

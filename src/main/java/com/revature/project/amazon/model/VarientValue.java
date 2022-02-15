@@ -20,7 +20,7 @@ import lombok.Setter;
 @Setter
 @Entity
 @Table(name="product_varient_values_table")
-public class VarientValues {
+public class VarientValue {
 	
 	@Id
 	@GeneratedValue(strategy = GenerationType.AUTO)
