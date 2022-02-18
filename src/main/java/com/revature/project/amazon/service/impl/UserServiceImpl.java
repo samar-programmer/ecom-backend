@@ -59,4 +59,10 @@ public class UserServiceImpl implements UserService {
 		 cartRepository.deleteByBufcartIdAndEmail(cartId,email);
 	}
 
+	@Override
+	public Cart findCartByProductIdAndPassword(String email, String productId) {
+		// TODO Auto-generated method stub
+		return cartRepository.findByEmailAndProductId(email,Integer.parseInt(productId));
+	}
+
 }

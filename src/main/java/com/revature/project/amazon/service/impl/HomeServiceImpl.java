@@ -98,8 +98,8 @@ public class HomeServiceImpl implements HomeService{
 	}
 
 	@Override
-	public User fetchByOtp(long tempOtp) {
-		return homeRepository.findByOtp(tempOtp);
+	public User fetchByOtp(long tempOtp, String email) {
+		return homeRepository.findByOtpAndEmail(tempOtp, email);
 	}
 
 	@Override

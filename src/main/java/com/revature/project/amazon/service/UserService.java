@@ -19,4 +19,6 @@ public interface UserService {
 
 	void deleteBufcartIdAndEmail(long cartId, String email);
 
+	Cart findCartByProductIdAndPassword(String email, String productId);
+
 }

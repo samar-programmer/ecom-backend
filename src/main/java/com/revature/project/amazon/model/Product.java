@@ -3,6 +3,7 @@ package com.revature.project.amazon.model;
 import java.util.List;
 
 import javax.persistence.CascadeType;
+import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
@@ -12,14 +13,18 @@ import javax.persistence.OneToMany;
 import javax.persistence.Table;
 import javax.validation.constraints.NotBlank;
 
+import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 @Data
 @Getter
 @Setter
 @Entity
+@NoArgsConstructor
+@AllArgsConstructor
 @Table(name = "products_table")
 public class Product {
 	@Id
@@ -31,8 +36,9 @@ public class Product {
 	@NotBlank(message = "productName is mandatory")
 	private String productName;
 	@NotBlank(message = "brand is mandatory")
-	private String brand;//
+	private String brand;
 	@NotBlank(message = "model is mandatory")
+	@Column(unique=true)
 	private String model;
 	@NotBlank(message = "imgsrc is mandatory")
 	private String imgsrc;

@@ -178,7 +178,7 @@ private void addFooter(Document document) throws DocumentException {
 	leaveEmptyLine(p2, 3);
 	p2.setAlignment(Element.ALIGN_MIDDLE);
 	p2.add(new Paragraph(
-			"------------------------End Of " +reportFileName+"------------------------", 
+			"----------------------End Of " +reportFileName+"----------------------", 
 			COURIER_SMALL_FOOTER));
 	
 	document.add(p2);

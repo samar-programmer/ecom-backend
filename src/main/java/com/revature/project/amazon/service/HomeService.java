@@ -14,7 +14,7 @@ public interface HomeService {
 
 	int updateUserByOtp(String to, long otp);
 
-	User fetchByOtp(long tempOtp);
+	User fetchByOtp(long tempOtp, String recoveryEmail);
 
 	boolean sendPassword(String subject, String tempPassword, String tempEmail);
 

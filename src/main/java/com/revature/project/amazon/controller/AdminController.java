@@ -59,6 +59,7 @@ public class AdminController {
 
 	}
 
+	
 	@GetMapping("/products")
 	public ResponseEntity<ProductResponse> getAllProduct() {
 		logger.info("Inside getAllProduct Method");
@@ -85,6 +86,7 @@ public class AdminController {
 		return new ResponseEntity<ProductResponse>(productResponse, HttpStatus.OK);
 	}
 
+	
 	@DeleteMapping("/product/{id}")
 	public ResponseEntity<ProductResponse> deleteProduct(@PathVariable(value = "id") Long productId) {
 		logger.info("Inside deleteProduct Method");
@@ -110,7 +112,7 @@ public class AdminController {
 
 	@PostMapping("/varient")
 	public ResponseEntity<ProductResponse> addVarient(@RequestParam String productId, @RequestParam String value,
-			@RequestParam String email) {
+			@RequestParam String email, @RequestParam String model) {
 		logger.info("Inside addVarient Method");
 		ProductResponse productResponse = new ProductResponse();
 		try {
@@ -134,13 +136,14 @@ public class AdminController {
 				varients.setValue(value);
 				varients.setProductId(Integer.parseInt(productId));
 				varients.setEmail(email);
+				varients.setModel(model);
 				List<ProductVarient> ProductVarientsList = new ArrayList();
 				ProductVarientsList.add(varients);
 				product.setVarients(ProductVarientsList);
 				adminService.addProduct(product);
 
 				productResponse.setStatus(ResponseCode.SUCCESS_CODE);
-				productResponse.setMessage(ResponseCode.ADD_SUCCESS_MESSAGE);
+				productResponse.setMessage("Varient Added SuccessFully");
 				productResponse.setSuccessErrorType(ResponseCode.SUCCESS);
 			} else {
 				productResponse.setStatus("409");
@@ -184,7 +187,7 @@ public class AdminController {
 				adminService.addProduct(product);
 
 				productResponse.setStatus(ResponseCode.SUCCESS_CODE);
-				productResponse.setMessage(ResponseCode.ADD_SUCCESS_MESSAGE);
+				productResponse.setMessage("Varient Updated SuccessFully");
 				productResponse.setSuccessErrorType(ResponseCode.SUCCESS);
 			} else {
 				productResponse.setStatus("409");
@@ -211,7 +214,7 @@ public class AdminController {
 			adminService.deleteVarientbyId(VarientId);
 
 			productResponse.setStatus(ResponseCode.SUCCESS_CODE);
-			productResponse.setMessage(ResponseCode.DEL_SUCCESS_MESSAGE);
+			productResponse.setMessage("Varient Deleted SuccessFully");
 		} catch (Exception e) {
 			throw new ProductCustomException("Unable to delete product details, please try again");
 		}
@@ -220,7 +223,7 @@ public class AdminController {
 
 	@PostMapping("/varientvalue")
 	public ResponseEntity<ProductResponse> addVarientValues(@RequestParam String varientId, @RequestParam String name,
-			@RequestParam String price, @RequestParam String email) {
+			@RequestParam String price, @RequestParam String email, @RequestParam String model) {
 		logger.info("Inside addVarientValues Method");
 		ProductResponse productResponse = new ProductResponse();
 		try {
@@ -244,6 +247,7 @@ public class AdminController {
 				varientvalues.setName(name);
 				varientvalues.setPrice(price);
 				varientvalues.setEmail(email);
+				varientvalues.setModel(model);
 				List<VarientValue> ProductVarientsList = new ArrayList();
 				ProductVarientsList.add(varientvalues);
 				ProductVarients.setVarientvalues(ProductVarientsList);
@@ -283,6 +287,7 @@ public class AdminController {
 				varientvalues.setName(editVarintValues.getName());
 				varientvalues.setPrice(editVarintValues.getPrice());
 				varientvalues.setEmail(editVarintValues.getEmail());
+				varientvalues.setModel(editVarintValues.getModel());
 				List<VarientValue> ProductVarientsList = new ArrayList();
 				ProductVarientsList.add(varientvalues);
 				ProductVarients.setVarientvalues(ProductVarientsList);

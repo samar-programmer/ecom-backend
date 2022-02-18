@@ -13,14 +13,18 @@ import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
 
+import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 @Data
 @Getter
 @Setter
 @Entity
+@AllArgsConstructor
+@NoArgsConstructor
 @Table(name="product_varient_table")
 public class ProductVarient {
 	@Id
@@ -29,6 +33,7 @@ public class ProductVarient {
 	private int productId;
 	private String value;
 	private String email;
+	private String model;
 	
 	
 	@OneToMany(cascade = CascadeType.ALL)

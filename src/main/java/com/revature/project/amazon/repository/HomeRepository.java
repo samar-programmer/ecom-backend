@@ -18,6 +18,6 @@ public interface HomeRepository extends JpaRepository<User, Long> {
 	public void updateUserByOtp(@Param("to")String to, @Param("otp")long otp);
 
 
-	User findByOtp(long tempOtp);
+	User findByOtpAndEmail(long tempOtp, String email);
 
 }

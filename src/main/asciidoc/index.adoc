@@ -1,0 +1,78 @@
+= Amazon Rest Api Documentation
+
+This is an example output for a service running at http://localhost:9091:
+
+
+== GET API For product
+
+.curl
+include::{snippets}/testGetProducts/curl-request.adoc[]
+
+.request
+include::{snippets}/testGetProducts/http-request.adoc[]
+
+.responsebody
+include::{snippets}/testGetProducts/response-body.adoc[]
+
+.response
+include::{snippets}/testGetProducts/http-response.adoc[]
+
+
+== Post API For product
+
+.curl
+include::{snippets}/testAddProduct/curl-request.adoc[]
+
+.request
+include::{snippets}/testAddProduct/http-request.adoc[]
+
+.responsebody
+include::{snippets}/testAddProduct/response-body.adoc[]
+
+.response
+include::{snippets}/testAddProduct/http-response.adoc[]
+
+
+== Post API For Varient
+
+.curl
+include::{snippets}/testAddVarient/curl-request.adoc[]
+
+.request
+include::{snippets}/testAddVarient/http-request.adoc[]
+
+.responsebody
+include::{snippets}/testAddVarient/response-body.adoc[]
+
+.response
+include::{snippets}/testAddVarient/http-response.adoc[]
+
+== Put API For Varient
+
+.curl
+include::{snippets}/testEditVarient/curl-request.adoc[]
+
+.request
+include::{snippets}/testEditVarient/http-request.adoc[]
+
+.responsebody
+include::{snippets}/testEditVarient/response-body.adoc[]
+
+.response
+include::{snippets}/testEditVarient/http-response.adoc[]
+
+== Put API For Varient
+
+.curl
+include::{snippets}/testDeleteVarient/curl-request.adoc[]
+
+.request
+include::{snippets}/testDeleteVarient/http-request.adoc[]
+
+.responsebody
+include::{snippets}/testDeleteVarient/response-body.adoc[]
+
+.response
+include::{snippets}/testDeleteVarient/http-response.adoc[]
+
+The data which we can see as part of documentation will loaded from MockMvc Test case data

@@ -143,17 +143,20 @@ public class AdminServiceImpl implements AdminService {
 		List<Product> originalProductData = new ArrayList();
 
 		productResponse.getProductList().stream().forEach(product -> {
+			
+			//product.setProductDiscountPrice();
 
-			String totalPrice = product.getProductDiscountPrice();
-			radiocheck = "yes";
+			String totalPrice = String.valueOf(Double.parseDouble(product.getProductPrice())-Double.parseDouble(product.getProductDiscountPrice()));
+			
 			product.setTotalPrice(totalPrice);
 
 			List<ProductVarient> productVarients = getvarientByProductId(product.getProductId());
 
 			productVarients.stream().filter(varentvalue -> totalcheck == 0).forEach(varentvalue -> {
+				radiocheck = "yes";
 				List<VarientValue> list = getvarientValuesByVarientId(varentvalue.getVarientId());
 				list.stream().filter(values -> radiocheck.equalsIgnoreCase("yes")).forEach(values -> {
-					int FirstProductValue = Integer.parseInt(totalPrice) + Integer.parseInt(values.getPrice());
+					double FirstProductValue = Double.parseDouble(product.getTotalPrice()) + Double.parseDouble(values.getPrice());
 					product.setTotalPrice(String.valueOf(FirstProductValue));
 					product.setRadioCheck("yes");
 					radiocheck = "no";

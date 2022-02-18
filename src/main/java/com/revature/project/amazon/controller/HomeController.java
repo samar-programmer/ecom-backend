@@ -43,6 +43,8 @@ public class HomeController {
 	@Autowired
 	PDFGenerator pdfgenerator;
 	
+	String recoveryEmail;
+	
 	
 	Logger logger = LoggerFactory.getLogger(HomeController.class);
 	
@@ -112,30 +114,46 @@ public class HomeController {
 	}
 
 	@PostMapping("/send-otp")
-	public String sendOTP(@RequestBody User ecommerceuser) {
-		Random random = new Random(1000);
-		long otp = random.nextInt(999999);
-		String subject = "OTP from AMAZON";
-		String message = "OTP to Change Your Password is = " + otp;
-		String to = ecommerceuser.getEmail();
-		boolean flag = this.homeService.sendEmail(subject, message, to);
+	public ResponseEntity<ServerResponse> sendOTP(@RequestBody User ecommerceuser) {
+		
+		ServerResponse serverResponse = new ServerResponse();
+		
+		boolean userExists = homeService.checkUserExists(ecommerceuser.getEmail());
+		
+		if(userExists == true) {
+			Random random = new Random(1000);
+			long otp = random.nextInt(999999);
+			String subject = "OTP from AMAZON";
+			String message = "OTP to Change Your Password is = " + otp;
+			String to = ecommerceuser.getEmail();
+			recoveryEmail = ecommerceuser.getEmail();
+			boolean flag = this.homeService.sendEmail(subject, message, to);
+			
+			int i = homeService.updateUserByOtp(to, otp);
 
-		int i = homeService.updateUserByOtp(to, otp);
-
-		if (flag) {
-			return "Verify";
-		} else {
-			return "Wrong Credentials";
+			if (flag) {
+				serverResponse.setStatus(ResponseCode.SUCCESS);
+			} else {
+				serverResponse.setStatus("ERROR");
+				serverResponse.setMessage("Wrong Credentials");
+			}
+		}else {
+			serverResponse.setStatus("ERROR");
+			serverResponse.setMessage("Account does not exists, Please sign up");
 		}
+		
+		return new ResponseEntity<ServerResponse>(serverResponse, HttpStatus.OK);
+		
 	}
 
 	
 	@PostMapping("/verify-otp")
 	public String verifyOtp(@RequestBody User ecommerceuser) {
 		long tempOtp = ecommerceuser.getOtp();
+		
 
 		if (tempOtp != 0) {
-			ecommerceuser = homeService.fetchByOtp(tempOtp);
+			ecommerceuser = homeService.fetchByOtp(tempOtp, ecommerceuser.getEmail());
 
 		}
 		String tempEmail = ecommerceuser.getEmail();

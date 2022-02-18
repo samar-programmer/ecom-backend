@@ -30,6 +30,7 @@ public class VarientValue {
 	private String price;
 	private String radioCheck;
 	private String email;
+	private String model;
 	
 	 
 }

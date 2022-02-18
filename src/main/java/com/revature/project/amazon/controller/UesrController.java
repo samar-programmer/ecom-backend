@@ -42,23 +42,33 @@ public class UesrController {
 		ServerResponse serverResponse = new ServerResponse();
 		try {
 
-			Product cartItem = userService.findByProductid(Integer.parseInt(productId));
+			Cart cart = userService.findCartByProductIdAndPassword(email, productId);
+			
+			if(cart != null) {
+				serverResponse.setStatus(ResponseCode.SUCCESS_CODE);
+				serverResponse.setMessage("product already in cart");
+				serverResponse.setSuccessErrorType("ERROR");
+			}else {
+				Product cartItem = userService.findByProductid(Integer.parseInt(productId));
+				Cart buf = new Cart();
+				buf.setEmail(email);
+				buf.setQuantity(1);
+				buf.setPrice(Double.parseDouble(cartItem.getProductPrice()));
+				buf.setProductId(Integer.parseInt(productId));
+				buf.setProductname(cartItem.getProductName());
+				buf.setTotal(total);
+				Date date = new Date();
+				buf.setDateAdded(date);
 
-			Cart buf = new Cart();
-			buf.setEmail(email);
-			buf.setQuantity(1);
-			buf.setPrice(Double.parseDouble(cartItem.getProductPrice()));
-			buf.setProductId(Integer.parseInt(productId));
-			buf.setProductname(cartItem.getProductName());
-			buf.setTotal(total);
-			Date date = new Date();
-			buf.setDateAdded(date);
+				userService.addProductToCart(buf);
 
-			userService.addProductToCart(buf);
-
-			serverResponse.setStatus(ResponseCode.SUCCESS_CODE);
-			serverResponse.setMessage(ResponseCode.CART_UPD_MESSAGE_CODE);
+				serverResponse.setStatus(ResponseCode.SUCCESS_CODE);
+				serverResponse.setMessage(ResponseCode.CART_UPD_MESSAGE_CODE);
+			}
+			
+			
 		} catch (Exception e) {
+			e.printStackTrace();
 			throw new CartCustomException("Unable to add product to cart, please try again");
 		}
 		return new ResponseEntity<ServerResponse>(serverResponse, HttpStatus.OK);

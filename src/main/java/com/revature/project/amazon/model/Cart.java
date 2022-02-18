@@ -30,7 +30,6 @@ public class Cart {
 	private Date dateAdded;
 	private int quantity;
 	private double price;
-	@Column(name = "product_id")
 	private int productId;
 	private String productname;
 	private String total;
